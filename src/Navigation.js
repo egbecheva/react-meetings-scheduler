@@ -4,12 +4,14 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css'; 
 import 'mdbreact/dist/css/mdb.css';
 import './index.css';
-import {FaUsers} from 'react-icons/fa';
+import {FaUsers, FaLongArrowAltUp} from 'react-icons/fa';
 import { NavLink } from 'react-router-dom'
+import { Link } from '@reach/router';
+
 
 class Navigation extends Component {
     render(){
-        const {userName} = this.props;
+        const {userName, logOutUser} = this.props;
         return(
             <nav className="site-nav family-sans navbar navbar-expand navbar-light bg-light higher">
                 <div className="container-fluid">
@@ -33,9 +35,10 @@ class Navigation extends Component {
                             <a className="nav-item nav-link" href="/meetings">
                             Meetings
                             </a>
-                            <a className="nav-item nav-link" href="/login">
+                            <Link to = "/login" className="nav-item nav-link" 
+                            onClick={e => logOutUser(e)}>
                             Log out
-                            </a>
+                            </Link>
                         </span>
                         }
                     </div>

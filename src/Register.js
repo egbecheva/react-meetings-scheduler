@@ -4,11 +4,65 @@ import { Container, Row, Col, Input, Button, Fa, Card, CardBody, ModalFooter } f
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css'; 
 import 'mdbreact/dist/css/mdb.css';
+import FormError from './FormError';
+import firebase from './Firebase';
 
 
 class Register extends Component{
 
+    constructor(props){
+        super(props);
+        this.state = {
+            displayName: '',
+            email: '',
+            passOne: '',
+            passTwo: '',
+            errorMessage: null
+        };
 
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+
+
+    }
+
+// onChange event calls handleChange and passes the event object
+
+    handleChange(e) {
+        const itemName = e.target.name;
+        const itemValue = e.target.value;
+
+        this.setState({[itemName]: itemValue}, () => {if (this.state.passOne != this.state.passTwo){
+            this.setState({errorMessage:"Passwords don't match"})
+            } else {
+                this.setState({errorMessage: null});
+            }
+        });
+    }
+
+
+    handleSubmit(e) {
+        var registrationinfo = {
+           displayName: this.state.displayName,
+           email: this.state.email,
+           password: this.state.passOne
+        }
+        e.preventDefault();
+        firebase.auth().createUserWithEmailAndPassword(
+            registrationinfo.email,
+            registrationinfo.password
+        ).then(() => {
+            this.props.registerUser(registrationinfo.displayName);
+        })
+        .catch(error => {
+            if (error.message != null) {
+                this.setState({errorMessage: error.message});
+            } else {
+                this.setState({errorMessage: null});
+            }
+        })
+    }
     render(){
 
         const styles = {
@@ -23,7 +77,7 @@ class Register extends Component{
                 <span className = "text-secondary pl-1">
                 <Row>
                 <Container className = "d-flex justify-content-center" >
-                <section className=" pt-5 form-gradient justify-content-left">
+                <section className=" pt-5 form-gradient justify-content-left" onSubmit = {this.handleSubmit}>
                     <Row>
                     <Col sm="12">
                         <Card className="Form" style={styles.Form} >
@@ -38,14 +92,18 @@ class Register extends Component{
                             </Row>
                         </div>
                         <CardBody className="mx-4 mt-4">
-                            <Input label="Your name" group type="text" validate />
-                            <Input label="Your email" group type="text" validate />
-                            <Input label="Your password" group type="password" validate containerClass="mb-0"/>
-                            <Input label="Repeat password" group type="password" validate containerClass="mb-0"/>
+                        { this.state.errorMessage != null?(
+                            <FormError theMessage={this.state.errorMessage} />
+                        ):null}
+                        
+                            <Input onChange = {this.handleChange} value={this.state.displayName} name="displayName"label="Your name" group type="text" validate />
+                            <Input onChange = {this.handleChange} value={this.state.email} name="email" label="Your email" group type="text" validate />
+                            <Input onChange = {this.handleChange} value={this.state.passOne} name="passOne" label="Your password" group type="password" validate containerClass="mb-0"/>
+                            <Input onChange = {this.handleChange} value={this.state.passTwo} name="passTwo" label="Repeat password" group type="password" validate containerClass="mb-0"/>
                             <Row className="d-flex align-items-center mb-4 mt-5">
                             <Col md="12" className="justify-content-center ">
                                 <div className="text-right">
-                                <Button color="grey" rounded type="button" className="z-depth-1a ">Register</Button>
+                                <Button onClick={this.handleSubmit} color="grey" rounded type="button" className="z-depth-1a ">Register</Button>
                                 </div>
                             </Col>
                             </Row>

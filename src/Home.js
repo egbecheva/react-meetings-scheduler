@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { Link } from '@reach/router';
 import { Container, Row, Col, Input, Button, Fa, Card, CardBody, ModalFooter } from 'mdbreact';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css'; 
 import 'mdbreact/dist/css/mdb.css';
 import './home.css';
+
+
 
 
 class Home extends Component{
@@ -35,18 +38,22 @@ class Home extends Component{
     
                             {userName == null && (
                                 <span>
-                                    <Button gradient="peach" href="/register">
+                                    <Link to = '/register'>
+                                    <Button gradient="peach">
                                     Register
                                     </Button>  
+                                    </Link>
+                                    <Link to = '/login'>
                                     <Button color="grey" href="/login">
                                     Log In
                                     </Button>
+                                    </Link>
                                 </span>        
                             )}
 
-                            {userName != null && <a href="/meetings" className="btn btn-danger"  >
+                            {userName != null && <Link to ="/meetings" className="btn btn-danger"  >
                                 Meetings
-                            </a>}
+                            </Link>}
                         </div>
                     </div>
                 </div>
